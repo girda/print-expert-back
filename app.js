@@ -1,0 +1,31 @@
+'use strict';
+const db = require('./db.js');
+const express = require('express');
+const passport = require('passport');
+const cors = require('cors');
+const bodyParser = require("body-parser");
+const app = express();
+
+
+const authRoutes = require('./routes/auth');
+const clientsRoutes = require('./routes/clients');
+
+db.sequelize.authenticate()
+    .then(() => {
+        console.log('---BСТАНОВЛЕНО ЗЄДНАННЯ З БАЗОЮ ДАННИХ');
+    })
+    .catch(err => {
+        console.log('---ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:', err);
+    });
+
+
+app.use(passport.initialize());
+require('./middleware/passport')(passport);
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use("/api/auth", authRoutes);
+app.use("/api/clients", clientsRoutes);
+
+module.exports = app;
