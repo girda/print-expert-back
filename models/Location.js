@@ -16,9 +16,6 @@ module.exports = db.sequelize.define(
         client_id: {
             type: Sequelize.INTEGER
         },
-        region: {
-            type: Sequelize.STRING
-        },
         createdAt: {
             type: Sequelize.DATE
         },

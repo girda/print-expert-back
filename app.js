@@ -9,6 +9,10 @@ const app = express();
 
 const authRoutes = require('./routes/auth');
 const clientsRoutes = require('./routes/clients');
+const locationsRoutes = require('./routes/locations');
+const departmentsRoutes = require('./routes/departments');
+const printersRoutes = require('./routes/printers');
+const tableRoutes = require('./routes/table');
 
 db.sequelize.authenticate()
     .then(() => {
@@ -27,5 +31,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientsRoutes);
+app.use("/api/locations", locationsRoutes);
+app.use("/api/departments", departmentsRoutes);
+app.use("/api/printers", printersRoutes);
+app.use("/api/table", tableRoutes);
 
 module.exports = app;

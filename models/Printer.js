@@ -10,6 +10,9 @@ module.exports = db.sequelize.define(
             autoIncrement: true,
             primaryKey: true,
         },
+        c_printer_id: {
+          type: Sequelize.INTEGER
+        },
         location_id: {
             type: Sequelize.INTEGER
         },
