@@ -13,7 +13,7 @@ module.exports = db.sequelize.define(
         name: {
             type: Sequelize.STRING
         },
-        client_id: {
+        location_id: {
             type: Sequelize.INTEGER
         },
         createdAt: {

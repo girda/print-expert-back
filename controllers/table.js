@@ -1,45 +1,50 @@
 const db = require("../db");
+const errorHandler = require('../util/errorHandler');
 
 module.exports = (req, res) => {
-    const clientId = req.body.client.id;
-    const locationId = req.body.location ? req.body.location.id : req.body.location;
-    const departmentId = req.body.department ? req.body.department.id : req.body.department;
-    const printerId = req.body.printer ? req.body.printer.id : req.body.printer;
-    const startDate = formatDate(req.body.range.start);
-    const endDate = formatDate(req.body.range.end);
-    console.log(req.body);
-    db.sequelize.query("CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")")
-        .then(response => {
-            const tableData = [];
-            response.forEach(row => {
-                tableData.push({
-                    client: row.Client,
-                    city: row.Location,
-                    department: row.Department,
-                    model: row.model,
-                    serial_number: row.serialnumber,
-                    ip: null,
-                    page_count: row.CountCol,
-                    quantity_black: row.i_QtyBk + '%',
-                    quantity_cn: row.i_QtyCn + '%',
-                    quantity_mg: row.i_QtyMg + '%',
-                    quantity_yl: row.i_QtyYl + '%',
-                    average_coverage_bk: row.AvrCovBK + '%',
-                    average_coverage_cn: row.AvrCovCn + '%',
-                    average_coverage_mg: row.AvrCovMg + '%',
-                    average_coverage_yl: row.AvrCovYl + '%',
-                    average_coverage_all: row.AvrCovTotal + '%',
-                    cartridge_resource_bk: row.SdrtBK,
-                    cartridge_resource_cn: row.SdrtCn,
-                    cartridge_resource_mg: row.SdrtMg,
-                    cartridge_resource_yl: row.SdrtYl
-                })
+    try {
+        const clientId = req.body.client.id;
+        const locationId = req.body.location ? req.body.location.id : req.body.location;
+        const departmentId = req.body.department ? req.body.department.id : req.body.department;
+        const printerId = req.body.printer ? req.body.printer.id : req.body.printer;
+        const startDate = formatDate(req.body.range.start);
+        const endDate = formatDate(req.body.range.end);
+        console.log(req.body);
+        db.sequelize.query("CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")")
+            .then(response => {
+                const tableData = [];
+                response.forEach(row => {
+                    tableData.push({
+                        client: row.Client,
+                        city: row.Location,
+                        department: row.Department,
+                        model: row.model,
+                        serial_number: row.serialnumber,
+                        ip: null,
+                        page_count: row.CountCol,
+                        quantity_black: row.i_QtyBk + '%',
+                        quantity_cn: row.i_QtyCn + '%',
+                        quantity_mg: row.i_QtyMg + '%',
+                        quantity_yl: row.i_QtyYl + '%',
+                        average_coverage_bk: row.AvrCovBK + '%',
+                        average_coverage_cn: row.AvrCovCn + '%',
+                        average_coverage_mg: row.AvrCovMg + '%',
+                        average_coverage_yl: row.AvrCovYl + '%',
+                        average_coverage_all: row.AvrCovTotal + '%',
+                        cartridge_resource_bk: row.SdrtBK,
+                        cartridge_resource_cn: row.SdrtCn,
+                        cartridge_resource_mg: row.SdrtMg,
+                        cartridge_resource_yl: row.SdrtYl
+                    })
+                });
+                res.json(tableData);
+            })
+            .error(error => {
+                errorHandler(res, error);
             });
-            res.json(tableData);
-        })
-        .error(error => {
-            console.log(error);
-        });
+    } catch (error) {
+        errorHandler(res, error);
+    }
 };
 
 function formatDate(date) {
