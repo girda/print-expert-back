@@ -18,6 +18,16 @@ module.exports.getAll = (req, res) => {
 };
 
 module.exports.create = (req, res) => {
-    console.log(req.body)
-    Client.create(req.body)
+    try {
+        console.log(req.body);
+        const dataClient = {name: req.body.name};
+
+        Client.create(dataClient).then(response => {
+            console.log(response.dataValues);
+            res.json({message: `Кліент ${response.dataValues.name} успішно створений`})
+        })
+    } catch (error) {
+        errorHandler(res, error);
+    }
+
 };

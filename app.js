@@ -13,6 +13,7 @@ const locationsRoutes = require('./routes/locations');
 const departmentsRoutes = require('./routes/departments');
 const printersRoutes = require('./routes/printers');
 const tableRoutes = require('./routes/table');
+const connectionsRoutes = require('./routes/connections-cww');
 
 db.sequelize.authenticate()
     .then(() => {
@@ -35,5 +36,6 @@ app.use("/api/locations", locationsRoutes);
 app.use("/api/departments", departmentsRoutes);
 app.use("/api/printers", printersRoutes);
 app.use("/api/table", tableRoutes);
+app.use("/api/connections", connectionsRoutes);
 
 module.exports = app;

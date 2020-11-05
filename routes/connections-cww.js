@@ -1,8 +1,8 @@
 const express = require('express');
-const controller = require('../controllers/departments');
+const controller = require('../controllers/connections-cww');
 const router = express.Router();
 
 router.get('/:id', controller.getAll);
-router.post('/:id', controller.create);
+router.post('/', controller.create);
 
 module.exports = router;
