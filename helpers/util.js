@@ -3,29 +3,39 @@ module.exports = {
         func();
         return (setInterval(func, time))
     },
-    transformDataDB1cInDB(data, list) {
-        const intermediateResult = {};
-        const results = {
-            products: [],
-            clients: []
-        };
-        list.forEach(name => {
-            intermediateResult[name] = [];
-        });
-
-        data.forEach((obj, i) => {
-            for (let key in obj) {
-                intermediateResult[list[i]].push(obj[key].dataValues)
-            }
-        });
-
-        intermediateResult.products.forEach((product, i) => {
-            results.products.push({...intermediateResult.invoices[i], ...product});
-            delete results.products[i].invoice_id;
-            delete results.products[i].id;
-        });
-        results.clients = intermediateResult.clients;
-
-        return results;
+    every8am: (yourcode) => {
+    var now = new Date(),
+        start,
+        wait;
+    console.log(now.getMinutes())
+    console.log(now.getHours())
+    if (now.getHours() <= 16 && now.getMinutes() < 15) {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 15, 0, 0);
+        console.log('if')
+        console.log(start)
+    } else {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 16, 15, 0, 0);
+        console.log('else')
+        console.log(start)
     }
+
+    wait = start.getTime() - now.getTime();
+
+    if(wait <= 0) { //If missed 8am before going into the setTimeout
+        console.log('Oops, missed the hour');
+        every8am(yourcode); //Retry
+    } else {
+        console.log(wait)
+        setTimeout(function () { //Wait 8am
+            setInterval(function () {
+                yourcode();
+            }, 10000); //Every day
+        },wait);
+    }
+}
+
+// var yourcode = function () {
+//     console.log('This will print evryday at 8am');
+// };
+// every8am(yourcode);
 };

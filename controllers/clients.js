@@ -24,7 +24,7 @@ module.exports.create = (req, res) => {
 
         Client.create(dataClient).then(response => {
             console.log(response.dataValues);
-            res.json({message: `Кліент ${response.dataValues.name} успішно створений`})
+            res.json({message: `Кліент "${response.dataValues.name}" успішно створений`})
         })
     } catch (error) {
         errorHandler(res, error);

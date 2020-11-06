@@ -16,6 +16,9 @@ module.exports = db.sequelize.define(
         location_id: {
             type: Sequelize.INTEGER
         },
+        client_id: {
+          type: Sequelize.INTEGER
+        },
         createdAt: {
             type: Sequelize.DATE
         },

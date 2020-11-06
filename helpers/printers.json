@@ -1,0 +1,80 @@
+[
+  {
+    "c_printer_id": 4,
+    "location": "NULL",
+    "ip": "NULL",
+    "model": "NULL",
+    "serialNumber": "NULL",
+    "CountBk": -1,
+    "CountCol": -1,
+    "TonBk": -1,
+    "TonCn": -1,
+    "TonMg": -1,
+    "TonYl": -1
+  },
+  {
+    "c_printer_id": 5,
+    "location": "NULL",
+    "ip": "NULL",
+    "model": "NULL",
+    "serialNumber": "NULL",
+    "CountBk": -1,
+    "CountCol": -1,
+    "TonBk": -1,
+    "TonCn": -1,
+    "TonMg": -1,
+    "TonYl": -1
+  },
+  {
+    "c_printer_id": 7,
+    "location": "NULL",
+    "ip": "NULL",
+    "model": "NULL",
+    "serialNumber": "NULL",
+    "CountBk": -1,
+    "CountCol": -1,
+    "TonBk": -1,
+    "TonCn": -1,
+    "TonMg": -1,
+    "TonYl": -1
+  },
+  {
+    "c_printer_id": 8,
+    "location": "NULL",
+    "ip": "NULL",
+    "model": "NULL",
+    "serialNumber": "NULL",
+    "CountBk": -1,
+    "CountCol": -1,
+    "TonBk": -1,
+    "TonCn": -1,
+    "TonMg": -1,
+    "TonYl": -1
+  },
+  {
+    "c_printer_id": 9,
+    "location": "NULL",
+    "ip": "NULL",
+    "model": "NULL",
+    "serialNumber": "NULL",
+    "CountBk": -1,
+    "CountCol": -1,
+    "TonBk": -1,
+    "TonCn": -1,
+    "TonMg": -1,
+    "TonYl": -1
+  },
+  {
+    "c_printer_id": 100,
+    "location": "",
+    "ip": "192.168.1.167",
+    "model": "HP LaserJet Pro MFP M225dn",
+    "serialNumber": "CNB9HDBC4C",
+    "CountBk": 9161,
+    "CountCol": -1,
+    "TonBk": -1,
+    "TonCn": -1,
+    "TonMg": -1,
+    "TonYl": -1
+  }
+]

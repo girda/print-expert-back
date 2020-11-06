@@ -4,13 +4,13 @@ const errorHandler = require('../util/errorHandler');
 module.exports = (req, res) => {
     try {
         const clientId = req.body.client.id;
-        const locationId = req.body.location ? req.body.location.id : req.body.location;
+        const locationId = req.body.location ? req.body.location.name : req.body.location;
         const departmentId = req.body.department ? req.body.department.id : req.body.department;
-        const printerId = req.body.printer ? req.body.printer.id : req.body.printer;
+        // const printerId = req.body.printer ? req.body.printer.id : req.body.printer;
         const startDate = formatDate(req.body.range.start);
         const endDate = formatDate(req.body.range.end);
         console.log(req.body);
-        db.sequelize.query("CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")")
+        db.sequelize.query("CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ",'" + locationId + "', " + departmentId + ")")
             .then(response => {
                 const tableData = [];
                 response.forEach(row => {

@@ -34,7 +34,7 @@ module.exports.create = (req, res) => {
         }
         ConnectionCWW.create(dataConnection).then(response => {
             console.log(response.dataValues);
-            res.json({message: `Підключення CWW ${response.dataValues.ip} успішно створено`})
+            res.json({message: `Підключення CWW "${response.dataValues.ip}" успішно створено`})
         })
     } catch (error) {
         errorHandler(res, error);

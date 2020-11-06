@@ -1,12 +1,23 @@
 const Location = require('../models/Location');
 const errorHandler = require('../util/errorHandler');
+const Sequelize = require('sequelize');
 
 module.exports.getAll = (req, res) => {
     try {
         const where = JSON.parse(req.params.id);
-        Location.findAll({where}).then(locations => {
-            const resLocations = [];
+        let getLocations;
 
+        if (where.client_id) {
+            getLocations = Location.findAll({
+                attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('name')), 'name']],
+                where
+            })
+        } else {
+            getLocations = Location.findAll({where})
+        }
+        getLocations.then(locations => {
+            const resLocations = [];
+            console.log(locations.locations)
             locations.forEach(location => {
                 resLocations.push({id: location.id, name: location.name})
             });
@@ -25,10 +36,10 @@ module.exports.create = (req, res) => {
             cwwc_id: req.body.connection_id,
             client_id: req.body.client_id
         };
-
+        // console.log(dataLocation.dataValues)
         Location.create(dataLocation).then(response => {
             console.log(response.dataValues);
-            res.json({message: `Місто ${response.dataValues.name} успішно створено`})
+            res.json({message: `Місто "${response.dataValues.name}" успішно створено`})
         })
     } catch (error) {
         errorHandler(res, error);
