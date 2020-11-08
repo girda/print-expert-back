@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const db = require("../db");
 
 module.exports = db.sequelize.define(
-    'printers',
+    'printer_data',
     {
         id: {
             type: Sequelize.INTEGER,
@@ -10,29 +10,44 @@ module.exports = db.sequelize.define(
             autoIncrement: true,
             primaryKey: true,
         },
-        c_printer_id: {
+        printer_id: {
           type: Sequelize.INTEGER
         },
-        wwcc_id: {
+        data: {
+            type: Sequelize.DATE
+        },
+        status_id: {
             type: Sequelize.INTEGER
         },
-        location_id: {
+        CountBk: {
             type: Sequelize.INTEGER
         },
-        department_id: {
+        CountCol: {
             type: Sequelize.INTEGER
         },
-        ip: {
-            type: Sequelize.STRING
-        },
-        client_id: {
+        TonBk: {
             type: Sequelize.INTEGER
         },
-        model: {
-            type: Sequelize.STRING
+        TonCn: {
+            type: Sequelize.INTEGER
         },
-        serialnumber: {
-            type: Sequelize.STRING
+        TonMg: {
+            type: Sequelize.INTEGER
+        },
+        TonYl: {
+            type: Sequelize.INTEGER
+        },
+        QtyBk: {
+            type: Sequelize.INTEGER
+        },
+        QtyCn: {
+            type: Sequelize.INTEGER
+        },
+        QtyMg: {
+            type: Sequelize.INTEGER
+        },
+        QtyYl: {
+            type: Sequelize.INTEGER
         },
         createdAt: {
             type: Sequelize.DATE

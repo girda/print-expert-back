@@ -15,9 +15,14 @@ const printersRoutes = require('./routes/printers');
 const tableRoutes = require('./routes/table');
 const connectionsRoutes = require('./routes/connections-cww');
 
+const connectionsCWW = require('./connectionCWW')
+
 db.sequelize.authenticate()
     .then(() => {
         console.log('---BСТАНОВЛЕНО ЗЄДНАННЯ З БАЗОЮ ДАННИХ');
+        
+        connectionsCWW()
+        
     })
     .catch(err => {
         console.log('---ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:', err);
