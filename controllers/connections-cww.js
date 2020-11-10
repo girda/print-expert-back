@@ -1,5 +1,7 @@
 const ConnectionCWW = require('../models/ConnectionCWW');
 const errorHandler = require('../util/errorHandler');
+const httpRequest = require('../util/httpRequest');
+const util = require('../config/keys');
 
 module.exports.getAll = (req, res) => {
     try {
@@ -12,7 +14,8 @@ module.exports.getAll = (req, res) => {
                     ip: connection.ip,
                     login: connection.login,
                     pswd: connection.pswd,
-                    client_id: connection.client_id
+                    client_id: connection.client_id,
+                    status: connection.status
                 })
             });
             res.json(resConnections)
@@ -34,6 +37,20 @@ module.exports.create = (req, res) => {
         }
         ConnectionCWW.create(dataConnection).then(response => {
             console.log(response.dataValues);
+
+            httpRequest(response.dataValues.ip, '/printers',
+                () => {
+                    ConnectionCWW.update({status: util.statusSuccess}, {where: {id: response.dataValues.id}});
+                    console.log(`connecting ${response.dataValues.ip} successful`)
+                },
+                () => {
+                    ConnectionCWW.update(
+                        {status: util.statusError, error: 'Нет подключения к сервису'},
+                        {where: {id: connection.dataValues.id}}
+                    );
+                }
+                );
+
             res.json({message: `Підключення CWW "${response.dataValues.ip}" успішно створено`})
         })
     } catch (error) {

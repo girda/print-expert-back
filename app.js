@@ -19,13 +19,12 @@ const connectionsCWW = require('./connectionCWW')
 
 db.sequelize.authenticate()
     .then(() => {
-        console.log('---BСТАНОВЛЕНО ЗЄДНАННЯ З БАЗОЮ ДАННИХ');
-        
+        console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
         connectionsCWW()
-        
+
     })
     .catch(err => {
-        console.log('---ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:', err);
+        console.log(`---> ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:`, err);
     });
 
 

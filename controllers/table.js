@@ -9,12 +9,21 @@ module.exports = (req, res) => {
         // const printerId = req.body.printer ? req.body.printer.id : req.body.printer;
         const startDate = formatDate(req.body.range.start);
         const endDate = formatDate(req.body.range.end);
+        let query = null;
+
+        if (locationId) {
+            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ",'" + locationId + "', " + departmentId + ")"
+        } else {
+            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")"
+        }
         console.log(req.body);
-        db.sequelize.query("CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ",'" + locationId + "', " + departmentId + ")")
+
+        db.sequelize.query(query)
             .then(response => {
                 const tableData = [];
                 response.forEach(row => {
                     tableData.push({
+                        printer_id: row.printer_id,
                         client: row.Client,
                         city: row.Location,
                         department: row.Department,

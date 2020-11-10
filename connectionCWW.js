@@ -1,22 +1,32 @@
 const ConnectionCWW = require('./models/ConnectionCWW');
-const controllerPrinter = require('./controllers/printers')
+const controllerPrinter = require('./controllers/printers');
+const httpRequest = require('./util/httpRequest');
+const util = require('./config/keys');
 
 module.exports = () => {
+
     ConnectionCWW.findAll().then(connections => {
-
         connections.forEach(connection => {
-            const fs = require('fs');
+            // Функция создания принтеров в БД и обновления статуса
+            const createPrinters = (printers) => {
+                printers.forEach(printer => {
+                    controllerPrinter.create(printer, connection.client_id, connection.id)
+                        .then(printer => {
+                            console.log(printer.dataValues)
+                        });
+                });
+                ConnectionCWW.update({status: util.statusSuccess}, {where: {id: connection.dataValues.id}});
+            };
 
-            let rawdata = fs.readFileSync('helpers/printers.json');
-            let printers = JSON.parse(rawdata);
+            const updateStatus = (status, message) => {
+                ConnectionCWW.update(
+                    {status, error: message},
+                    {where: {id: connection.dataValues.id}}
+                );
+            };
 
-            console.log(connection.dataValues.ip);
+            httpRequest(connection.ip, '/printers', createPrinters, updateStatus)
 
-
-            printers.forEach(printer => {
-                controllerPrinter.create(printer, connection.client_id, connection.id)
-            })
-            
         })
     })
-}
+};

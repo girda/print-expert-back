@@ -2,10 +2,12 @@ module.exports = {
     jwt: 'dev-jwt',
     databaseOptions: {
         name: 'xerox',
-        login: 'root',
+        login: 'ron',
         password: '-ron*',
-        host: 'localhost',
+        host: '192.168.1.109',
         port: '3306'
     },
-    databaseSynchronizationTimeout: 100000
+    databaseSynchronizationTimeout: 100000,
+    statusSuccess: 1,
+    statusError: 0
 };

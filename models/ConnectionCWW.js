@@ -23,7 +23,13 @@ module.exports = db.sequelize.define(
             type: Sequelize.STRING
         },
         client_id: {
-          type: Sequelize.INTEGER
+            type: Sequelize.INTEGER
+        },
+        status: {
+            type: Sequelize.INTEGER
+        },
+        error: {
+            type: Sequelize.STRING
         },
         createdAt: {
             type: Sequelize.DATE

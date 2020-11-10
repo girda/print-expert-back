@@ -20,11 +20,12 @@ module.exports.getAll = (req, res) => {
 
 module.exports.create = async (printer, clientId, cwwId) => {
     try {
-        const candidate = await Printer.findOne({where: {c_printer_id: printer.c_printer_id}})
+        const candidate = await Printer.findOne({where: {c_printer_id: printer.c_printer_id, client_id: clientId}});
 
         if (candidate) {
-            console.log('candidate')
-            console.log(candidate.dataValues)
+            console.log('candidate');
+            console.log(candidate.dataValues);
+
 
             const printerData = {
                 printer_id: candidate.dataValues.id,
@@ -34,11 +35,11 @@ module.exports.create = async (printer, clientId, cwwId) => {
                 TonCn: printer.TonCn,
                 TonMg: printer.TonMg,
                 TonYl: printer.TonYl
-              };
+            };
 
             PrinterData.create(printerData).then(printerData => {
                 console.log(printerData.dataValues);
-            })
+            });
         } else {
             const newPrinter = {
                 c_printer_id: printer.c_printer_id,
@@ -46,9 +47,9 @@ module.exports.create = async (printer, clientId, cwwId) => {
                 wwcc_id: cwwId
             };
 
-            console.log('not candidate')
-            console.log(newPrinter)
-            Printer.create(newPrinter).then(printer => {
+            console.log('not candidate');
+            console.log(newPrinter);
+            await Printer.create(newPrinter).then(printer => {
                 console.log(printer.dataValues.id);
 
                 const printerData = {
@@ -59,17 +60,17 @@ module.exports.create = async (printer, clientId, cwwId) => {
                     TonCn: printer.TonCn,
                     TonMg: printer.TonMg,
                     TonYl: printer.TonYl
-                  };
+                };
 
                 PrinterData.create(printerData).then(printerData => {
                     console.log(printerData.dataValues);
                 })
             })
         }
-        
+
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
         errorHandler(res, error);
     }
 };
