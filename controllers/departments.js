@@ -1,4 +1,4 @@
-const Department = require('../models/Departmen');
+const Department = require('../models/Department');
 const Location = require('../models/Location');
 const errorHandler = require('../util/errorHandler');
 
@@ -59,4 +59,15 @@ module.exports.create = (req, res) => {
         errorHandler(res, error);
     }
 
+};
+
+module.exports.remove = (req, res) => {
+    try {
+        Department.destroy({where: {id: req.params.id}})
+            .then(deletedRecord => {
+                res.json({message: `Відділ успішно видалено`});
+            })
+    } catch (error) {
+        errorHandler(res, error);
+    }
 };

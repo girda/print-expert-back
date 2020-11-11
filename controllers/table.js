@@ -24,8 +24,9 @@ module.exports = (req, res) => {
                 response.forEach(row => {
                     tableData.push({
                         printer_id: row.printer_id,
+                        cwwc_id: row.Cwwc_id,
                         client: row.Client,
-                        city: row.Location,
+                        location: row.Location,
                         department: row.Department,
                         model: row.model,
                         serial_number: row.serialnumber,

@@ -12,7 +12,7 @@ module.exports = () => {
                 printers.forEach(printer => {
                     controllerPrinter.create(printer, connection.client_id, connection.id)
                         .then(printer => {
-                            console.log(printer.dataValues)
+                            console.log(printer)
                         });
                 });
                 ConnectionCWW.update({status: util.statusSuccess}, {where: {id: connection.dataValues.id}});

@@ -1,4 +1,6 @@
 const ConnectionCWW = require('../models/ConnectionCWW');
+const Location = require('../models/Location');
+const Printer = require('../models/Printer');
 const errorHandler = require('../util/errorHandler');
 const httpRequest = require('../util/httpRequest');
 const util = require('../config/keys');
@@ -46,7 +48,7 @@ module.exports.create = (req, res) => {
                 () => {
                     ConnectionCWW.update(
                         {status: util.statusError, error: 'Нет подключения к сервису'},
-                        {where: {id: connection.dataValues.id}}
+                        {where: {id: response.dataValues.id}}
                     );
                 }
                 );
@@ -56,5 +58,23 @@ module.exports.create = (req, res) => {
     } catch (error) {
         errorHandler(res, error);
     }
+};
 
+module.exports.remove = async (req, res) => {
+
+    try {
+        const location = await Location.findOne({where: {cwwc_id: req.params.id}});
+        const printer = await Printer.findOne({where: {cwwc_id: req.params.id}});
+
+        if (location || printer) {
+            res.json({message: `Поточний об'єкт неможливо видалити, бо на нього посилаються інші об'єкти. Видаліть об'єкти які посилаються на нього та спробуйте ще.`});
+        } else {
+            await ConnectionCWW.destroy({where: {id: req.params.id}})
+                .then(deletedRecord => {
+                    res.json({message: `З'єднання IP успішно видалено`});
+                })
+        }
+    } catch (error) {
+        errorHandler(res, error);
+    }
 };

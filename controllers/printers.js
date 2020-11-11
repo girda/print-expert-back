@@ -1,5 +1,7 @@
 const Printer = require('../models/Printer');
 const PrinterData = require('../models/PrinterData');
+const Location = require('../models/Location');
+const CartridgeResources = require('../models/CartridgeResources');
 const errorHandler = require('../util/errorHandler');
 
 module.exports.getAll = (req, res) => {
@@ -44,7 +46,7 @@ module.exports.create = async (printer, clientId, cwwId) => {
             const newPrinter = {
                 c_printer_id: printer.c_printer_id,
                 client_id: clientId,
-                wwcc_id: cwwId
+                cwwc_id: cwwId
             };
 
             console.log('not candidate');
@@ -71,6 +73,43 @@ module.exports.create = async (printer, clientId, cwwId) => {
 
     } catch (error) {
         console.log(error);
+    }
+};
+
+module.exports.update = async (req, res) => {
+    try {
+        const printers = req.body;
+        const updatePrinters = new Promise(resolve => {
+            printers.forEach((printer, i) => {
+                Location.findOne({where: {name: printer.location_name, cwwc_id: printer.cwwc_id}})
+                    .then(location => {
+                        const locationId = location.dataValues.id;
+                        Printer.update(
+                            {location_id: locationId},
+                            {where: {id: printer.printer_id}}
+                        );
+                        CartridgeResources.update(
+                            {
+                                SdrtBK: printer.cartridge_resource_bk,
+                                SdrtCn: printer.cartridge_resource_cn,
+                                SdrtMg: printer.cartridge_resource_mg,
+                                SdrtYl: printer.cartridge_resource_yl,
+                            },
+                            {where: {printer_id: printer.printer_id}}
+                        );
+
+                        if (printers.length- 1 === +i) {
+                            resolve(true)
+                        }
+                    });
+            })
+        });
+
+        updatePrinters().then(res => {
+            res.json({message: 'Дані успішно збережені!'})
+        })
+    } catch (error) {
         errorHandler(res, error);
     }
+    // console.log(req.body)
 };
