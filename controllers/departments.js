@@ -31,7 +31,7 @@ module.exports.getAll = (req, res) => {
                 const resDepartments = [];
 
                 departments.forEach(department => {
-                    resDepartments.push({id: department.id, name: department.name})
+                    resDepartments.push({id: department.id, name: department.name, location_id: department.location_id})
                 });
                 res.json(resDepartments)
             })

@@ -20,7 +20,7 @@ const connectionsCWW = require('./connectionCWW')
 db.sequelize.authenticate()
     .then(() => {
         console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
-        // connectionsCWW()
+        connectionsCWW()
 
     })
     .catch(err => {

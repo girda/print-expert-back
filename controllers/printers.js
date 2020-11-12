@@ -25,22 +25,18 @@ module.exports.create = async (printer, clientId, cwwId) => {
         const candidate = await Printer.findOne({where: {c_printer_id: printer.c_printer_id, client_id: clientId}});
 
         if (candidate) {
-            console.log('candidate');
-            console.log(candidate.dataValues);
-
-
             const printerData = {
                 printer_id: candidate.dataValues.id,
-                CountBk: printer.CountBk,
-                CountCol: printer.CountCol,
-                TonBk: printer.TonBk,
-                TonCn: printer.TonCn,
-                TonMg: printer.TonMg,
-                TonYl: printer.TonYl
+                CountBk: printer.countBk,
+                CountCol: printer.countCol,
+                TonBk: printer.tonBk,
+                TonCn: printer.tonCn,
+                TonMg: printer.tonMg,
+                TonYl: printer.tonYl
             };
 
             PrinterData.create(printerData).then(printerData => {
-                console.log(printerData.dataValues);
+                // console.log(printerData.dataValues);
             });
         } else {
             const newPrinter = {
@@ -56,12 +52,12 @@ module.exports.create = async (printer, clientId, cwwId) => {
 
                 const printerData = {
                     printer_id: printer.dataValues.id,
-                    CountBk: printer.CountBk,
-                    CountCol: printer.CountCol,
-                    TonBk: printer.TonBk,
-                    TonCn: printer.TonCn,
-                    TonMg: printer.TonMg,
-                    TonYl: printer.TonYl
+                    CountBk: printer.countBk,
+                    CountCol: printer.countCol,
+                    TonBk: printer.tonBk,
+                    TonCn: printer.tonCn,
+                    TonMg: printer.tonMg,
+                    TonYl: printer.tonYl
                 };
 
                 PrinterData.create(printerData).then(printerData => {
@@ -85,19 +81,15 @@ module.exports.update = async (req, res) => {
                     .then(location => {
                         const locationId = location.dataValues.id;
                         Printer.update(
-                            {location_id: locationId},
-                            {where: {id: printer.printer_id}}
-                        );
-                        CartridgeResources.update(
                             {
                                 SdrtBK: printer.cartridge_resource_bk,
                                 SdrtCn: printer.cartridge_resource_cn,
                                 SdrtMg: printer.cartridge_resource_mg,
                                 SdrtYl: printer.cartridge_resource_yl,
+                                location_id: locationId
                             },
-                            {where: {printer_id: printer.printer_id}}
+                            {where: {id: printer.printer_id}}
                         );
-
                         if (printers.length- 1 === +i) {
                             resolve(true)
                         }

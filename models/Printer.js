@@ -28,6 +28,18 @@ module.exports = db.sequelize.define(
         client_id: {
             type: Sequelize.INTEGER
         },
+        SdrtBK: {
+            type: Sequelize.INTEGER
+        },
+        SdrtCn: {
+            type: Sequelize.INTEGER
+        },
+        SdrtMg: {
+            type: Sequelize.INTEGER
+        },
+        SdrtYl: {
+            type: Sequelize.INTEGER
+        },
         model: {
             type: Sequelize.STRING
         },

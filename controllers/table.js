@@ -27,6 +27,7 @@ module.exports = (req, res) => {
                         cwwc_id: row.Cwwc_id,
                         client: row.Client,
                         location: row.Location,
+                        location_id: row.Location_id,
                         department: row.Department,
                         model: row.model,
                         serial_number: row.serialnumber,

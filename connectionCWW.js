@@ -7,15 +7,23 @@ module.exports = () => {
 
     ConnectionCWW.findAll().then(connections => {
         connections.forEach(connection => {
+            const body = JSON.stringify({
+                login: connection.login,
+                password: connection.pswd
+            });
             // Функция создания принтеров в БД и обновления статуса
-            const createPrinters = (printers) => {
-                printers.forEach(printer => {
-                    controllerPrinter.create(printer, connection.client_id, connection.id)
-                        .then(printer => {
-                            console.log(printer)
-                        });
-                });
-                ConnectionCWW.update({status: util.statusSuccess}, {where: {id: connection.dataValues.id}});
+            const createPrinters = (data) => {
+                console.log(data);
+                if (data.status === 200) {
+                    const printers = data.printers.value;
+                    printers.forEach(printer => {
+                        controllerPrinter.create(printer, connection.client_id, connection.id)
+                            .then(printer => {
+                                console.log(printer)
+                            });
+                    });
+                    ConnectionCWW.update({status: util.statusSuccess}, {where: {id: connection.dataValues.id}});
+                }
             };
 
             const updateStatus = (status, message) => {
@@ -24,8 +32,7 @@ module.exports = () => {
                     {where: {id: connection.dataValues.id}}
                 );
             };
-
-            httpRequest(connection.ip, '/printers', createPrinters, updateStatus)
+            httpRequest(connection.ip, '/printers', createPrinters, updateStatus, 'POST', body)
 
         })
     })

@@ -1,7 +1,7 @@
 const util = require('../config/keys');
 const http = require('http');
 
-module.exports = (ip, path, callbackSuccess, callbackError, method) => {
+module.exports = (ip, path, callbackSuccess, callbackError, method, body) => {
     const options = {
         host: ip,
         port: 80,
@@ -29,6 +29,7 @@ module.exports = (ip, path, callbackSuccess, callbackError, method) => {
                 callbackError(util.statusError, error.message);
                 console.log("Error: " + error.message);
             });
+        req.write(body);
         req.end();
 
     } catch (error) {
