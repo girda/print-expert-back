@@ -4,7 +4,7 @@ const httpRequest = require('./util/httpRequest');
 const util = require('./config/keys');
 
 module.exports = () => {
-
+    console.log('run connection');
     ConnectionCWW.findAll().then(connections => {
         connections.forEach(connection => {
             const body = JSON.stringify({
@@ -22,6 +22,7 @@ module.exports = () => {
                                 console.log(printer)
                             });
                     });
+
                     ConnectionCWW.update({status: util.statusSuccess}, {where: {id: connection.dataValues.id}});
                 }
             };

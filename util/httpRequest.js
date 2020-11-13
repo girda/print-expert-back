@@ -4,7 +4,7 @@ const http = require('http');
 module.exports = (ip, path, callbackSuccess, callbackError, method, body) => {
     const options = {
         host: ip,
-        port: 80,
+        port: 8080,
         path: path,
         method: method ? method : 'GET',
         headers: {

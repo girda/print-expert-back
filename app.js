@@ -15,18 +15,20 @@ const printersRoutes = require('./routes/printers');
 const tableRoutes = require('./routes/table');
 const connectionsRoutes = require('./routes/connections-cww');
 
-const connectionsCWW = require('./connectionCWW')
+const connectionsCWW = require('./connectionCWW');
+const setTimer = require('./util/setTimer');
 
 db.sequelize.authenticate()
     .then(() => {
         console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
-        connectionsCWW()
+        const periodTime = 1000 * 60 * 10; // 10 минут
+        // setTimer(connectionsCWW, periodTime, 15, 30)
 
+        connectionsCWW()
     })
     .catch(err => {
         console.log(`---> ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:`, err);
     });
-
 
 app.use(passport.initialize());
 require('./middleware/passport')(passport);

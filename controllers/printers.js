@@ -35,8 +35,8 @@ module.exports.create = async (printer, clientId, cwwId) => {
                 TonYl: printer.tonYl
             };
 
-            PrinterData.create(printerData).then(printerData => {
-                // console.log(printerData.dataValues);
+            await PrinterData.create(printerData).then(printerData => {
+                console.log(printerData.dataValues);
             });
         } else {
             const newPrinter = {
@@ -72,7 +72,7 @@ module.exports.create = async (printer, clientId, cwwId) => {
     }
 };
 
-module.exports.update = async (req, res) => {
+module.exports.update = (req, res) => {
     try {
         const printers = req.body;
         const updatePrinters = new Promise(resolve => {
@@ -97,7 +97,7 @@ module.exports.update = async (req, res) => {
             })
         });
 
-        updatePrinters().then(res => {
+        updatePrinters.then(response => {
             res.json({message: 'Дані успішно збережені!'})
         })
     } catch (error) {

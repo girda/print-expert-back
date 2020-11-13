@@ -1,13 +1,13 @@
-module.exports = (callback, periodTime, startHour) => {
+const setTimer = (callback, periodTime, startHour, startMinutes) => {
     const now = new Date();
     let start;
     let wait;
 
-    if ( now.getHours() < startHour ) {
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, 0, 0, 0);
+    if ( now.getHours() <= startHour && now.getMinutes() < startMinutes) {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMinutes, 0, 0);
 
     } else {
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, startHour, 0, 0, 0);
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, startHour, startMinutes, 0, 0);
     }
 
     wait = start.getTime() - now.getTime();
@@ -22,3 +22,4 @@ module.exports = (callback, periodTime, startHour) => {
         }, wait);
     }
 };
+module.exports = setTimer;

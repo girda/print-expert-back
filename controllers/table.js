@@ -14,7 +14,7 @@ module.exports = (req, res) => {
         if (locationId) {
             query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ",'" + locationId + "', " + departmentId + ")"
         } else {
-            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")"
+            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ", '', " + departmentId + ")"
         }
         console.log(req.body);
 
