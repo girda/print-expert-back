@@ -14,7 +14,7 @@ module.exports = (req, res) => {
         if (locationId) {
             query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ",'" + locationId + "', " + departmentId + ")"
         } else {
-            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ", '', " + departmentId + ")"
+            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")"
         }
         console.log(req.body);
 
@@ -33,10 +33,10 @@ module.exports = (req, res) => {
                         serial_number: row.serialnumber,
                         ip: null,
                         page_count: row.CountCol,
-                        quantity_black: row.i_QtyBk + '%',
-                        quantity_cn: row.i_QtyCn + '%',
-                        quantity_mg: row.i_QtyMg + '%',
-                        quantity_yl: row.i_QtyYl + '%',
+                        quantity_black: row.i_QtyBk,
+                        quantity_cn: row.i_QtyCn,
+                        quantity_mg: row.i_QtyMg,
+                        quantity_yl: row.i_QtyYl,
                         average_coverage_bk: row.AvrCovBK + '%',
                         average_coverage_cn: row.AvrCovCn + '%',
                         average_coverage_mg: row.AvrCovMg + '%',

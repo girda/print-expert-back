@@ -36,7 +36,7 @@ module.exports.create = (req, res) => {
             login: req.body.login,
             pswd: req.body.password,
             client_id: req.body.client_id
-        }
+        };
         ConnectionCWW.create(dataConnection).then(response => {
             console.log(response.dataValues);
 

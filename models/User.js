@@ -40,6 +40,9 @@ module.exports = db.sequelize.define(
             type: Sequelize.STRING,
             defaultValue: '123'
         },
+        filters: {
+            type: Sequelize.STRING
+        },
         token: {
             type: Sequelize.STRING
         },

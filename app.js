@@ -22,9 +22,8 @@ db.sequelize.authenticate()
     .then(() => {
         console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
         const periodTime = 1000 * 60 * 10; // 10 минут
-        // setTimer(connectionsCWW, periodTime, 15, 30)
-
-        connectionsCWW()
+        // setTimer(connectionsCWW, periodTime, 14, 52)
+        // connectionsCWW()
     })
     .catch(err => {
         console.log(`---> ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:`, err);
