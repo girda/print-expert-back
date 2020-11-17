@@ -15,7 +15,10 @@ module.exports.login = (req, res) => {
                     const token = jwt.sign(user.dataValues, keys.jwt, {expiresIn: 60 * 60 * 12});
 
                     res.status(200).json({
-                        token: "Bearer " + token
+                        token: "Bearer " + token,
+                        role: user.dataValues.role_id,
+                        filters: user.dataValues.filters,
+                        id: user.dataValues.id
                     });
                 } else {
                     res.status(401).json({message: 'невірний пароль'});

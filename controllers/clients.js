@@ -44,7 +44,7 @@ module.exports.remove = async (req, res) => {
         } else {
             await Client.destroy({where: {id: req.params.id}})
                 .then(deletedRecord => {
-                    res.json({message: `З'єднання IP успішно видалено`});
+                    res.json({message: `Клієнт успішно видалено`});
                 })
         }
     } catch (error) {

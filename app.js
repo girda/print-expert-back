@@ -14,6 +14,7 @@ const departmentsRoutes = require('./routes/departments');
 const printersRoutes = require('./routes/printers');
 const tableRoutes = require('./routes/table');
 const connectionsRoutes = require('./routes/connections-cww');
+const filtersRoutes = require('./routes/filters');
 
 const connectionsCWW = require('./connectionCWW');
 const setTimer = require('./util/setTimer');
@@ -22,8 +23,9 @@ db.sequelize.authenticate()
     .then(() => {
         console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
         const periodTime = 1000 * 60 * 10; // 10 минут
-        // setTimer(connectionsCWW, periodTime, 14, 52)
+        // setTimer(connectionsCWW, periodTime, 13, 6)
         // connectionsCWW()
+
     })
     .catch(err => {
         console.log(`---> ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:`, err);
@@ -42,5 +44,6 @@ app.use("/api/departments", departmentsRoutes);
 app.use("/api/printers", printersRoutes);
 app.use("/api/table", tableRoutes);
 app.use("/api/connections", connectionsRoutes);
+app.use("/api/filters", filtersRoutes);
 
 module.exports = app;

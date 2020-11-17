@@ -1,7 +1,7 @@
 const Printer = require('../models/Printer');
 const PrinterData = require('../models/PrinterData');
 const Location = require('../models/Location');
-const CartridgeResources = require('../models/CartridgeResources');
+const db = require("../db");
 const errorHandler = require('../util/errorHandler');
 
 module.exports.getAll = (req, res) => {
@@ -25,19 +25,8 @@ module.exports.create = async (printer, clientId, cwwId) => {
         const candidate = await Printer.findOne({where: {c_printer_id: printer.c_printer_id, client_id: clientId}});
 
         if (candidate) {
-            const printerData = {
-                printer_id: candidate.dataValues.id,
-                CountBk: printer.countBk,
-                CountCol: printer.countCol,
-                TonBk: printer.tonBk,
-                TonCn: printer.tonCn,
-                TonMg: printer.tonMg,
-                TonYl: printer.tonYl
-            };
-
-            await PrinterData.create(printerData).then(printerData => {
-                console.log(printerData.dataValues);
-            });
+            console.log(candidate);
+            updatePrinterData(candidate.dataValues.id, printer)
         } else {
             const newPrinter = {
                 c_printer_id: printer.c_printer_id,
@@ -47,26 +36,10 @@ module.exports.create = async (printer, clientId, cwwId) => {
 
             console.log('not candidate');
             console.log(newPrinter);
-            await Printer.create(newPrinter).then(printer => {
-                console.log(printer.dataValues.id);
-
-                const printerData = {
-                    printer_id: printer.dataValues.id,
-                    CountBk: printer.countBk,
-                    CountCol: printer.countCol,
-                    TonBk: printer.tonBk,
-                    TonCn: printer.tonCn,
-                    TonMg: printer.tonMg,
-                    TonYl: printer.tonYl
-                };
-
-                PrinterData.create(printerData).then(printerData => {
-                    console.log(printerData.dataValues);
-                })
+            await Printer.create(newPrinter).then(p => {
+                updatePrinterData(p.dataValues.id, printer)
             })
         }
-
-
     } catch (error) {
         console.log(error);
     }
@@ -105,3 +78,22 @@ module.exports.update = (req, res) => {
     }
     // console.log(req.body)
 };
+
+function updatePrinterData(id, printer) {
+    const query = "CALL `sp_insert_data`(" + id + ", "
+        + printer.countBk + ", "
+        + printer.countCol + ","
+        + printer.tonBk + ", "
+        + printer.tonCn + ", "
+        + printer.tonMg + ", "
+        + printer.tonYl + ")";
+    console.log(query);
+    db.sequelize.query(query)
+        .then(response => {
+            console.log('response sp_insert_data');
+            console.log(response)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
