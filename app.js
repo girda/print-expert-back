@@ -15,6 +15,7 @@ const printersRoutes = require('./routes/printers');
 const tableRoutes = require('./routes/table');
 const connectionsRoutes = require('./routes/connections-cww');
 const filtersRoutes = require('./routes/filters');
+const usersRoutes = require('./routes/users');
 
 const connectionsCWW = require('./connectionCWW');
 const setTimer = require('./util/setTimer');
@@ -45,5 +46,6 @@ app.use("/api/printers", printersRoutes);
 app.use("/api/table", tableRoutes);
 app.use("/api/connections", connectionsRoutes);
 app.use("/api/filters", filtersRoutes);
+app.use("/api/users", usersRoutes);
 
 module.exports = app;

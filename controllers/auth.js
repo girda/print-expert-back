@@ -6,7 +6,6 @@ const errorHandler = require('../util/errorHandler');
 module.exports.login = (req, res) => {
     try {
         const reqUser = req.body;
-
         User.findOne({where: {login: reqUser.login}})
             .then(user => {
 
@@ -16,7 +15,7 @@ module.exports.login = (req, res) => {
 
                     res.status(200).json({
                         token: "Bearer " + token,
-                        role: user.dataValues.role_id,
+                        role: user.dataValues.roleId,
                         filters: user.dataValues.filters,
                         id: user.dataValues.id
                     });

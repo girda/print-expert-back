@@ -16,15 +16,17 @@ module.exports = db.sequelize.define(
         email: {
             type: Sequelize.STRING
         },
-        role_id: {
-            type: Sequelize.INTEGER
+        roleId: {
+            type: Sequelize.INTEGER,
+            field: 'role_id'
         },
         blocked: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
         },
-        client_id: {
-            type: Sequelize.INTEGER
+        clientId: {
+            type: Sequelize.INTEGER,
+            field: 'client_id'
         },
         name_full: {
             type: Sequelize.STRING
@@ -59,4 +61,4 @@ module.exports = db.sequelize.define(
     {
         timestamps: false
     }
-);
+)

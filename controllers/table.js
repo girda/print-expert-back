@@ -16,7 +16,9 @@ module.exports = (req, res) => {
         } else {
             query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")"
         }
+        console.log('body')
         console.log(req.body);
+        console.log('query')
         console.log(query);
 
         db.sequelize.query(query)

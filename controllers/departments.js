@@ -6,6 +6,7 @@ module.exports.getAll = (req, res) => {
     try {
         const where = JSON.parse(req.params.id);
         if (where.name) {
+            console.log('departments')
             console.log(where)
             Location.findAll({where}).then(locations => {
                 const locationIds = [];
