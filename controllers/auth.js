@@ -17,8 +17,10 @@ module.exports.login = (req, res) => {
                         token: "Bearer " + token,
                         role: user.dataValues.roleId,
                         filters: user.dataValues.filters,
-                        id: user.dataValues.id
+                        id: user.dataValues.id,
+                        client: user.dataValues.clientId
                     });
+
                 } else {
                     res.status(401).json({message: 'невірний пароль'});
                 }

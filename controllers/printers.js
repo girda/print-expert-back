@@ -1,6 +1,7 @@
 const Printer = require('../models/Printer');
 const PrinterData = require('../models/PrinterData');
 const Location = require('../models/Location');
+const Department = require('../models/Department');
 const db = require("../db");
 const errorHandler = require('../util/errorHandler');
 
@@ -50,22 +51,30 @@ module.exports.update = (req, res) => {
         const printers = req.body;
         const updatePrinters = new Promise(resolve => {
             printers.forEach((printer, i) => {
-                Location.findOne({where: {name: printer.location_name, cwwc_id: printer.cwwc_id}})
+                Location.findOne(
+                    {where: {name: printer.location_name, cwwc_id: printer.cwwc_id}}
+                    )
                     .then(location => {
                         const locationId = location.dataValues.id;
-                        Printer.update(
-                            {
-                                SdrtBK: printer.cartridge_resource_bk,
-                                SdrtCn: printer.cartridge_resource_cn,
-                                SdrtMg: printer.cartridge_resource_mg,
-                                SdrtYl: printer.cartridge_resource_yl,
-                                location_id: locationId
-                            },
-                            {where: {id: printer.printer_id}}
-                        );
-                        if (printers.length- 1 === +i) {
-                            resolve(true)
-                        }
+                        Department.findOne(
+                            {where: {name: printer.department_name, location_id: locationId}}
+                        ).then(department => {
+                            const departmentId = department.dataValues.id;
+                            Printer.update(
+                                {
+                                    SdrtBK: printer.cartridge_resource_bk,
+                                    SdrtCn: printer.cartridge_resource_cn,
+                                    SdrtMg: printer.cartridge_resource_mg,
+                                    SdrtYl: printer.cartridge_resource_yl,
+                                    location_id: locationId,
+                                    department_id: departmentId
+                                },
+                                {where: {id: printer.printer_id}}
+                            );
+                            if (printers.length- 1 === +i) {
+                                resolve(true)
+                            }
+                        });
                     });
             })
         });
@@ -76,7 +85,6 @@ module.exports.update = (req, res) => {
     } catch (error) {
         errorHandler(res, error);
     }
-    // console.log(req.body)
 };
 
 function updatePrinterData(id, printer) {
