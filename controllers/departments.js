@@ -7,34 +7,46 @@ module.exports.getAll = (req, res) => {
         const where = JSON.parse(req.params.id);
         if (where.name) {
 
-            Location.findAll({where}).then(locations => {
-                const locationIds = [];
+            Location.findAll({where})
+                .then(locations => {
+                    const locationIds = [];
 
-                locations.forEach(location => {
-                    locationIds.push(location.id)
-                });
+                    locations.forEach(location => {
+                        locationIds.push(location.id)
+                    });
 
-                console.log(locationIds);
-                Department.findAll({where: {location_id: locationIds}}).then(departments => {
+                    console.log(locationIds);
+                    Department.findAll({where: {location_id: locationIds}}).then(departments => {
+                        const resDepartments = [];
+
+                        departments.forEach(department => {
+                            resDepartments.push({id: department.id, name: department.name})
+                        });
+                        console.log(resDepartments);
+                        res.json(resDepartments)
+                    })
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        } else {
+            Department.findAll({where})
+                .then(departments => {
+                    console.log(departments.locations);
                     const resDepartments = [];
 
                     departments.forEach(department => {
-                        resDepartments.push({id: department.id, name: department.name})
+                        resDepartments.push({
+                            id: department.id,
+                            name: department.name,
+                            location_id: department.location_id
+                        })
                     });
-                    console.log(resDepartments);
                     res.json(resDepartments)
                 })
-            })
-        } else {
-            Department.findAll({where}).then(departments => {
-                console.log(departments.locations);
-                const resDepartments = [];
-
-                departments.forEach(department => {
-                    resDepartments.push({id: department.id, name: department.name, location_id: department.location_id})
-                });
-                res.json(resDepartments)
-            })
+                .catch(error => {
+                    console.log(error)
+                })
         }
 
     } catch (error) {

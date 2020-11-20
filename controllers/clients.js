@@ -5,14 +5,18 @@ const errorHandler = require('../util/errorHandler');
 
 module.exports.getAll = (req, res) => {
     try {
-        Client.findAll().then(clients => {
-            const resClients = [];
+        Client.findAll()
+            .then(clients => {
+                const resClients = [];
 
-            clients.forEach(client => {
-                resClients.push({id: client.id, name: client.name})
-            });
-            res.json(resClients)
-        })
+                clients.forEach(client => {
+                    resClients.push({id: client.id, name: client.name})
+                });
+                res.json(resClients)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }
@@ -24,10 +28,14 @@ module.exports.create = (req, res) => {
         console.log(req.body);
         const dataClient = {name: req.body.name};
 
-        Client.create(dataClient).then(response => {
-            console.log(response.dataValues);
-            res.json({message: `Кліент "${response.dataValues.name}" успішно створений`})
-        })
+        Client.create(dataClient)
+            .then(response => {
+                console.log(response.dataValues);
+                res.json({message: `Кліент "${response.dataValues.name}" успішно створений`})
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }
@@ -45,6 +53,9 @@ module.exports.remove = async (req, res) => {
             await Client.destroy({where: {id: req.params.id}})
                 .then(deletedRecord => {
                     res.json({message: `Клієнт успішно видалено`});
+                })
+                .catch(error => {
+                    console.log(error)
                 })
         }
     } catch (error) {

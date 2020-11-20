@@ -24,10 +24,11 @@ module.exports.login = (req, res) => {
                 } else {
                     res.status(401).json({message: 'невірний пароль'});
                 }
-            }).catch(err => {
-            console.log(err);
-            res.status(404).json({message: 'користувач відсутній'});
-        })
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(404).json({message: 'користувач відсутній'});
+            })
     } catch (error) {
         errorHandler(res, error)
     }

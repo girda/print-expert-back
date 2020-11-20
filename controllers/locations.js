@@ -16,14 +16,18 @@ module.exports.getAll = async (req, res) => {
         } else {
             getLocations = Location.findAll({where})
         }
-        getLocations.then(locations => {
-            const resLocations = [];
-            console.log(locations.locations);
-            locations.forEach(location => {
-                resLocations.push({id: location.id, name: location.name, cwwc_id: location.cwwc_id})
-            });
-            res.json(resLocations)
-        })
+        getLocations
+            .then(locations => {
+                const resLocations = [];
+                console.log(locations.locations);
+                locations.forEach(location => {
+                    resLocations.push({id: location.id, name: location.name, cwwc_id: location.cwwc_id})
+                });
+                res.json(resLocations)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }
@@ -38,10 +42,14 @@ module.exports.create = async (req, res) => {
             client_id: req.body.client_id
         };
         // console.log(dataLocation.dataValues)
-        await Location.create(dataLocation).then(response => {
-            console.log(response.dataValues);
-            res.json({message: `Місто "${response.dataValues.name}" успішно створено`})
-        })
+        await Location.create(dataLocation)
+            .then(response => {
+                console.log(response.dataValues);
+                res.json({message: `Місто "${response.dataValues.name}" успішно створено`})
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }
@@ -57,6 +65,9 @@ module.exports.remove = async (req, res) => {
             await Location.destroy({where: {id: req.params.id}})
                 .then(deletedRecord => {
                     res.json({message: `Місто успішно видалено`});
+                })
+                .catch(error => {
+                    console.log(error)
                 })
         }
     } catch (error) {

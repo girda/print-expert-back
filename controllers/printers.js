@@ -7,15 +7,19 @@ const errorHandler = require('../util/errorHandler');
 
 module.exports.getAll = (req, res) => {
     try {
-        Printer.findAll({where: {department_id: req.params.id}}).then(printers => {
-            console.log(printers);
-            const resPrinters = [];
+        Printer.findAll({where: {department_id: req.params.id}})
+            .then(printers => {
+                console.log(printers);
+                const resPrinters = [];
 
-            printers.forEach(printer => {
-                resPrinters.push({id: printer.id, name: printer.model})
-            });
-            res.json(resPrinters)
-        })
+                printers.forEach(printer => {
+                    resPrinters.push({id: printer.id, name: printer.model})
+                });
+                res.json(resPrinters)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }
@@ -53,7 +57,7 @@ module.exports.update = (req, res) => {
             printers.forEach((printer, i) => {
                 Location.findOne(
                     {where: {name: printer.location_name, cwwc_id: printer.cwwc_id}}
-                    )
+                )
                     .then(location => {
                         const locationId = location.dataValues.id;
                         Department.findOne(
@@ -71,17 +75,26 @@ module.exports.update = (req, res) => {
                                 },
                                 {where: {id: printer.printer_id}}
                             );
-                            if (printers.length- 1 === +i) {
+                            if (printers.length - 1 === +i) {
                                 resolve(true)
                             }
+                        }).catch(error => {
+                            console.log(error)
                         });
+                    })
+                    .catch(error => {
+                        console.log(error)
                     });
             })
         });
 
-        updatePrinters.then(response => {
-            res.json({message: 'Дані успішно збережені!'})
-        })
+        updatePrinters
+            .then(response => {
+                res.json({message: 'Дані успішно збережені!'})
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }

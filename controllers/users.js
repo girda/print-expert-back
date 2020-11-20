@@ -9,23 +9,25 @@ module.exports.getAll = async (req, res) => {
         User.belongsTo(Client);
 
         await User.findAll({
-            include: [{model: Role},{model: Client}]
+            include: [{model: Role}, {model: Client}]
 
-        }).then(users => {
-            const resUser = [];
-            users.forEach(user => {
+        })
+            .then(users => {
+                const resUser = [];
+                users.forEach(user => {
 
-                resUser.push({
-                    login: user.login,
-                    email: user.email,
-                    name: user.name_full,
-                    role: user.role.name,
-                    client: user.client ? user.client.name : user.client
-                })
+                    resUser.push({
+                        login: user.login,
+                        email: user.email,
+                        name: user.name_full,
+                        role: user.role.name,
+                        client: user.client ? user.client.name : user.client
+                    })
 
-            });
-            res.json(resUser)
-        }).catch(error => console.log(error))
+                });
+                res.json(resUser)
+            })
+            .catch(error => console.log(error))
     } catch (error) {
         errorHandler(res, error);
     }
@@ -43,10 +45,14 @@ module.exports.create = (req, res) => {
             clientId: req.body.client
         };
 
-        User.create(newUser).then(user => {
-            console.log(user.dataValues);
-            res.json({message: `Користувач "${user.dataValues.login}" успішно створений`})
-        })
+        User.create(newUser)
+            .then(user => {
+                console.log(user.dataValues);
+                res.json({message: `Користувач "${user.dataValues.login}" успішно створений`})
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }

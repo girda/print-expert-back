@@ -7,21 +7,25 @@ const util = require('../config/keys');
 
 module.exports.getAll = (req, res) => {
     try {
-        ConnectionCWW.findAll({where: {client_id: req.params.id}}).then(connections => {
-            const resConnections = [];
+        ConnectionCWW.findAll({where: {client_id: req.params.id}})
+            .then(connections => {
+                const resConnections = [];
 
-            connections.forEach(connection => {
-                resConnections.push({
-                    id: connection.id,
-                    ip: connection.ip,
-                    login: connection.login,
-                    pswd: connection.pswd,
-                    client_id: connection.client_id,
-                    status: connection.status
-                })
-            });
-            res.json(resConnections)
-        })
+                connections.forEach(connection => {
+                    resConnections.push({
+                        id: connection.id,
+                        ip: connection.ip,
+                        login: connection.login,
+                        pswd: connection.pswd,
+                        client_id: connection.client_id,
+                        status: connection.status
+                    })
+                });
+                res.json(resConnections)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }
@@ -37,24 +41,28 @@ module.exports.create = (req, res) => {
             pswd: req.body.password,
             client_id: req.body.client_id
         };
-        ConnectionCWW.create(dataConnection).then(response => {
-            console.log(response.dataValues);
+        ConnectionCWW.create(dataConnection)
+            .then(response => {
+                console.log(response.dataValues);
 
-            httpRequest(response.dataValues.ip, '/printers',
-                () => {
-                    ConnectionCWW.update({status: util.statusSuccess}, {where: {id: response.dataValues.id}});
-                    console.log(`connecting ${response.dataValues.ip} successful`)
-                },
-                () => {
-                    ConnectionCWW.update(
-                        {status: util.statusError, error: 'Нет подключения к сервису'},
-                        {where: {id: response.dataValues.id}}
-                    );
-                }
+                httpRequest(response.dataValues.ip, '/printers',
+                    () => {
+                        ConnectionCWW.update({status: util.statusSuccess}, {where: {id: response.dataValues.id}});
+                        console.log(`connecting ${response.dataValues.ip} successful`)
+                    },
+                    () => {
+                        ConnectionCWW.update(
+                            {status: util.statusError, error: 'Нет подключения к сервису'},
+                            {where: {id: response.dataValues.id}}
+                        );
+                    }
                 );
 
-            res.json({message: `Підключення CWW "${response.dataValues.ip}" успішно створено`})
-        })
+                res.json({message: `Підключення CWW "${response.dataValues.ip}" успішно створено`})
+            })
+            .catch(error => {
+                console.log(error)
+            })
     } catch (error) {
         errorHandler(res, error);
     }
@@ -72,6 +80,9 @@ module.exports.remove = async (req, res) => {
             await ConnectionCWW.destroy({where: {id: req.params.id}})
                 .then(deletedRecord => {
                     res.json({message: `З'єднання IP успішно видалено`});
+                })
+                .catch(error => {
+                    console.log(error)
                 })
         }
     } catch (error) {
