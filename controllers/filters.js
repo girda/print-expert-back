@@ -19,6 +19,7 @@ module.exports.get = (req, res) => {
 
 module.exports.update = (req, res) => {
     try {
+        console.log(req.params.id)
         User.update(
             {filters: JSON.stringify(req.body)},
             {where: {id: req.params.id}}

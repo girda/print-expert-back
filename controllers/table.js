@@ -4,18 +4,20 @@ const errorHandler = require('../util/errorHandler');
 module.exports = (req, res) => {
     try {
         const clientId = req.body.client;
-        const locationId = req.body.location ? req.body.location.name : req.body.location;
-        const departmentId = req.body.department ? req.body.department.id : req.body.department;
+        const locationId = req.body.location;
+        const departmentId = req.body.department;
         // const printerId = req.body.printer ? req.body.printer.id : req.body.printer;
         const startDate = formatDate(req.body.range.start);
         const endDate = formatDate(req.body.range.end);
         let query = null;
 
         if (locationId) {
-            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ",'" + locationId + "', " + departmentId + ")"
+            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ", '" + locationId + "', " + departmentId + ")"
         } else {
-            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + "," + locationId + ", " + departmentId + ")"
+            query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ", " + locationId + ", " + departmentId + ")"
         }
+        console.log(' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! query')
+        console.log(query)
 
         db.sequelize.query(query)
             .then(response => {
@@ -48,6 +50,7 @@ module.exports = (req, res) => {
                     })
                 });
                 res.json(tableData);
+
             })
             .error(error => {
                 errorHandler(res, error);
