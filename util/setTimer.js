@@ -22,9 +22,9 @@ const setTimer = (callback, periodTime, startHour, startMinutes) => {
         console.log(wait)
     } else {
         console.log('setTimeout')
-        setTimeout(() => {
+        global.timerTimeout = setTimeout(() => {
             callback();
-            setInterval(() => {
+            global.timerInterval =  setInterval(() => {
                 callback();
             }, periodTime);
         }, wait);

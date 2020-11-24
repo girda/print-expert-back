@@ -5,7 +5,7 @@ const passport = require('passport');
 const cors = require('cors');
 const bodyParser = require("body-parser");
 const app = express();
-
+const router = express.Router();
 
 const authRoutes = require('./routes/auth');
 const clientsRoutes = require('./routes/clients');
@@ -16,6 +16,7 @@ const tableRoutes = require('./routes/table');
 const connectionsRoutes = require('./routes/connections-cww');
 const filtersRoutes = require('./routes/filters');
 const usersRoutes = require('./routes/users');
+const timerRoutes = require('./routes/timer');
 
 const connectionsCWW = require('./connectionCWW');
 const setTimer = require('./util/setTimer');
@@ -23,8 +24,13 @@ const setTimer = require('./util/setTimer');
 db.sequelize.authenticate()
     .then(() => {
         console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
-        const periodTime = 1000 * 60 * 10; // 10 минут
-        // setTimer(connectionsCWW, periodTime, 13, 6)
+        const periodTime = 1000 * 60; // 1 минут
+        // setTimer(connectionsCWW, periodTime, 13, 23);
+        // console.log(global.timerInterval)
+        // console.log(global.timerTimeout)
+        // setTimeout(()=> {
+        //     console.log(global.timer)
+        // }, 1000* 50)
         // connectionsCWW()
 
     })
@@ -47,5 +53,6 @@ app.use("/api/table", tableRoutes);
 app.use("/api/connections", connectionsRoutes);
 app.use("/api/filters", filtersRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/timer", timerRoutes);
 
 module.exports = app;
