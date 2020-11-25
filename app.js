@@ -5,7 +5,6 @@ const passport = require('passport');
 const cors = require('cors');
 const bodyParser = require("body-parser");
 const app = express();
-const router = express.Router();
 
 const authRoutes = require('./routes/auth');
 const clientsRoutes = require('./routes/clients');
@@ -20,18 +19,25 @@ const timerRoutes = require('./routes/timer');
 
 const connectionsCWW = require('./connectionCWW');
 const setTimer = require('./util/setTimer');
+const Settings = require('./models/Settings');
 
 db.sequelize.authenticate()
     .then(() => {
         console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
-        const periodTime = 1000 * 60; // 1 минут
-        // setTimer(connectionsCWW, periodTime, 13, 23);
-        // console.log(global.timerInterval)
-        // console.log(global.timerTimeout)
-        // setTimeout(()=> {
-        //     console.log(global.timer)
-        // }, 1000* 50)
-        // connectionsCWW()
+
+        Settings.findOne({where: {id: 1}})
+            .then(setting => {
+                if (setting.dataValues.exec_status && !global.timerTimeout) {
+                    const startHour = setting.dataValues.hh;
+                    const startMinutes = setting.dataValues.mm;
+                    const periodTime = 1000 * 60 * 2; // 10 минут
+
+                    setTimer(connectionsCWW, periodTime, startHour, startMinutes);
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
 
     })
     .catch(err => {

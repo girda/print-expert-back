@@ -9,5 +9,7 @@ module.exports = {
     },
     databaseSynchronizationTimeout: 100000,
     statusSuccess: 1,
-    statusError: 0
+    statusError: 0,
+    statusStartTimer: 1,
+    statusStopTimer: 0
 };
