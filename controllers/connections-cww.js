@@ -47,12 +47,12 @@ module.exports.create = (req, res) => {
 
                 httpRequest(response.dataValues.ip, '/printers',
                     () => {
-                        ConnectionCWW.update({status: util.statusSuccess}, {where: {id: response.dataValues.id}});
+                        ConnectionCWW.update({status: util.statusConnectionSuccess}, {where: {id: response.dataValues.id}});
                         console.log(`connecting ${response.dataValues.ip} successful`)
                     },
                     () => {
                         ConnectionCWW.update(
-                            {status: util.statusError, error: 'Нет подключения к сервису'},
+                            {status: util.statusConnectionError, error: 'Нет подключения к сервису'},
                             {where: {id: response.dataValues.id}}
                         );
                     }

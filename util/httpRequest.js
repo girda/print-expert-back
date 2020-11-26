@@ -26,7 +26,7 @@ module.exports = (ip, path, callbackSuccess, callbackError, method, body) => {
     try {
         const req = http.request(options, callback)
             .on("error", (error) => {
-                callbackError(util.statusError, error.message);
+                callbackError(util.statusConnectionError, error.message);
                 console.log("Error: " + error.message);
             });
         req.write(body);

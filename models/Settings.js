@@ -28,6 +28,10 @@ module.exports = db.sequelize.define(
         exec_status: {
             type: Sequelize.INTEGER
         },
+        period: {
+            type: Sequelize.INTEGER
+        }
+
         // createdAt: {
         //     type: Sequelize.DATE
         // },

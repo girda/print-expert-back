@@ -19,21 +19,38 @@ module.exports.get = async (req, res) => {
 module.exports.start = async (req, res) => {
     try {
         await Settings.update(
-            {exec_status: keys.statusStartTimer},
+            {
+                exec_status: keys.statusStartTimer,
+                hh: req.body.hour,
+                mm: req.body.minutes,
+                period: req.body.period ? req.body.period : keys.timerPeriod
+            },
             {where: {id: req.params.id}})
             .then(() => {
 
                 Settings.findOne({where: {id: req.params.id}})
                     .then(setting => {
-                        const startHour = setting.dataValues.hh;
-                        const startMinutes = setting.dataValues.mm;
-                        const periodTime = 1000 * 60 * 2; // 10 минут
+                        const paramsTimer = {
+                            callback: connectionsCWW,
+                            callbackWhere: keys.timerId === req.params.id ? null : {status: keys.statusConnectionError},
+                            periodTime: setting.period_time * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
+                            startHour: setting.dataValues.hh,
+                            startMinutes: setting.dataValues.mm,
+                            timerTimeout: keys.timerId === req.params.id ? global.timerTimeout : global.timerErrorsTimeout,
+                            timerInterval: keys.timerId === req.params.id ? global.timerInterval : global.timerIErrorsnterval
+                        };
 
-                        setTimer(connectionsCWW, periodTime, startHour, startMinutes);
+                        setTimer(paramsTimer);
                         res.json(setting)
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log(error);
+                        Settings.update(
+                            {
+                                error_status: 1,
+                                error_descr: error
+                            },
+                            {where: {id: req.params.id}});
                         errorHandler(res, error);
                     })
             });
@@ -41,6 +58,12 @@ module.exports.start = async (req, res) => {
 
 
     } catch (error) {
+        Settings.update(
+            {
+                error_status: 1,
+                error_descr: error
+            },
+            {where: {id: req.params.id}})
         errorHandler(res, error);
     }
 

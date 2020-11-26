@@ -20,20 +20,41 @@ const timerRoutes = require('./routes/timer');
 const connectionsCWW = require('./connectionCWW');
 const setTimer = require('./util/setTimer');
 const Settings = require('./models/Settings');
+const keys = require('./config/keys');
 
 db.sequelize.authenticate()
     .then(() => {
         console.log(`---> ВСТАНОВЛЕНО З'ЄДНАННЯ З БАЗОЮ ДАНИХ`);
 
-        Settings.findOne({where: {id: 1}})
-            .then(setting => {
-                if (setting.dataValues.exec_status && !global.timerTimeout) {
-                    const startHour = setting.dataValues.hh;
-                    const startMinutes = setting.dataValues.mm;
-                    const periodTime = 1000 * 60 * 2; // 10 минут
+        Settings.findAll()
+            .then(settings => {
+                settings.forEach(setting => {
+                    if (setting.dataValues.id === keys.timerId && setting.dataValues.exec_status && !global.timerTimeout) {
+                        const paramsTimer = {
+                            callback: connectionsCWW,
+                            callbackWhere: null,
+                            periodTime: setting.period_time * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
+                            startHour: setting.dataValues.hh,
+                            startMinutes: setting.dataValues.mm,
+                            timerTimeout: global.timerTimeout,
+                            timerInterval: global.timerInterval
+                        };
 
-                    setTimer(connectionsCWW, periodTime, startHour, startMinutes);
-                }
+                        setTimer(paramsTimer);
+                    } else if (setting.dataValues.id === keys.timerErrorsId && setting.dataValues.exec_status && !global.timerErrorsTimeout) {
+                        const paramsTimer = {
+                            callback: connectionsCWW,
+                            callbackWhere: {status: keys.statusConnectionError},
+                            periodTime: setting.period_time * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
+                            startHour: setting.dataValues.hh,
+                            startMinutes: setting.dataValues.mm,
+                            timerTimeout: global.timerErrorsTimeout,
+                            timerInterval: global.timerIErrorsnterval
+                        };
+                        setTimer(paramsTimer);
+                    }
+                })
+
             })
             .catch(error => {
                 console.log(error)

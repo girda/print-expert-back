@@ -3,9 +3,9 @@ const controllerPrinter = require('./controllers/printers');
 const httpRequest = require('./util/httpRequest');
 const util = require('./config/keys');
 
-module.exports = () => {
+module.exports = (where) => {
     console.log('run connection');
-    ConnectionCWW.findAll().then(connections => {
+    ConnectionCWW.findAll({where: where}).then(connections => {
         connections.forEach(connection => {
             const body = JSON.stringify({
                 login: connection.login,
@@ -23,7 +23,7 @@ module.exports = () => {
                             });
                     });
 
-                    ConnectionCWW.update({status: util.statusSuccess}, {where: {id: connection.dataValues.id}});
+                    ConnectionCWW.update({status: util.statusConnectionSuccess, error: null}, {where: {id: connection.dataValues.id}});
                 }
             };
 
