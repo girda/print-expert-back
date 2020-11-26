@@ -3,7 +3,8 @@ const setTimer = ({callback, periodTime, startHour, startMinutes, timerTimeout, 
     let start;
     let wait;
     console.log(now);
-    if ( now.getHours() <= startHour && now.getMinutes() <= startMinutes) {
+    console.log(periodTime);
+    if ( now.getHours() <= startHour && now.getMinutes() < startMinutes) {
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMinutes, 0, 0);
         console.log('if');
         console.log(start);
@@ -15,19 +16,22 @@ const setTimer = ({callback, periodTime, startHour, startMinutes, timerTimeout, 
 
     wait = start.getTime() - now.getTime();
 
+
     console.log(wait);
     if ( wait <= 0 ) {
-        setTimer({callback, periodTime, startHour, startMinutes, timerTimeout, timerInterval, callbackWhere});
         console.log('if wait');
-        console.log(wait)
+        console.log(wait);
+        setTimer({callback, periodTime, startHour, startMinutes, timerTimeout, timerInterval, callbackWhere});
     } else {
         console.log('setTimeout');
         timerTimeout = setTimeout(() => {
             callback(callbackWhere);
+            console.log(periodTime);
             timerInterval = setInterval(() => {
                 callback(callbackWhere);
             }, periodTime);
         }, wait);
     }
 };
+
 module.exports = setTimer;

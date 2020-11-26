@@ -33,19 +33,18 @@ db.sequelize.authenticate()
                         const paramsTimer = {
                             callback: connectionsCWW,
                             callbackWhere: null,
-                            periodTime: setting.period_time * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
+                            periodTime: setting.period * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
                             startHour: setting.dataValues.hh,
                             startMinutes: setting.dataValues.mm,
                             timerTimeout: global.timerTimeout,
                             timerInterval: global.timerInterval
                         };
-
                         setTimer(paramsTimer);
                     } else if (setting.dataValues.id === keys.timerErrorsId && setting.dataValues.exec_status && !global.timerErrorsTimeout) {
                         const paramsTimer = {
                             callback: connectionsCWW,
                             callbackWhere: {status: keys.statusConnectionError},
-                            periodTime: setting.period_time * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
+                            periodTime: setting.period * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
                             startHour: setting.dataValues.hh,
                             startMinutes: setting.dataValues.mm,
                             timerTimeout: global.timerErrorsTimeout,
@@ -54,12 +53,10 @@ db.sequelize.authenticate()
                         setTimer(paramsTimer);
                     }
                 })
-
             })
             .catch(error => {
                 console.log(error)
             })
-
     })
     .catch(err => {
         console.log(`---> ПОМИЛКА ЗЄДНАННЯ З БАЗОЮ ДАННИХ:`, err);

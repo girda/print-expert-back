@@ -33,7 +33,7 @@ module.exports.start = async (req, res) => {
                         const paramsTimer = {
                             callback: connectionsCWW,
                             callbackWhere: keys.timerId === req.params.id ? null : {status: keys.statusConnectionError},
-                            periodTime: setting.period_time * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
+                            periodTime: setting.period * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
                             startHour: setting.dataValues.hh,
                             startMinutes: setting.dataValues.mm,
                             timerTimeout: keys.timerId === req.params.id ? global.timerTimeout : global.timerErrorsTimeout,
@@ -76,10 +76,18 @@ module.exports.stop = async (req, res) => {
             {where: {id: req.params.id}})
             .then(() => {
 
-                if (global.timerInterval) {
-                    clearInterval(global.timerInterval)
-                } else if (global.timerTimeout) {
-                    clearTimeout(global.timerTimeout)
+                if (keys.timerId === req.params.id) {
+                    if (global.timerInterval) {
+                        clearInterval(global.timerInterval)
+                    } else if (global.timerTimeout) {
+                        clearTimeout(global.timerTimeout)
+                    }
+                } else {
+                    if (global.timerErrorsInterval) {
+                        clearInterval(global.timerErrorsInterval)
+                    } else if (global.timerErrorsTimeout) {
+                        clearTimeout(global.timerErrorsTimeout)
+                    }
                 }
                 Settings.findOne({where: {id: req.params.id}})
                     .then(setting => {
