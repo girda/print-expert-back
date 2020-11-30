@@ -25,19 +25,19 @@ module.exports.start = async (req, res) => {
                 mm: req.body.minutes,
                 period: req.body.period ? req.body.period : keys.timerPeriod
             },
-            {where: {id: req.params.id}})
+            {where: {id: parseInt(req.params.id)}})
             .then(() => {
 
-                Settings.findOne({where: {id: req.params.id}})
+                Settings.findOne({where: {id: parseInt(req.params.id)}})
                     .then(setting => {
                         const paramsTimer = {
                             callback: connectionsCWW,
-                            callbackWhere: keys.timerId === req.params.id ? null : {status: keys.statusConnectionError},
+                            callbackWhere: +keys.timerId === parseInt(req.params.id) ? null : {status: keys.statusConnectionError},
                             periodTime: setting.period * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
                             startHour: setting.dataValues.hh,
                             startMinutes: setting.dataValues.mm,
-                            timerTimeout: keys.timerId === req.params.id ? global.timerTimeout : global.timerErrorsTimeout,
-                            timerInterval: keys.timerId === req.params.id ? global.timerInterval : global.timerIErrorsnterval
+                            timerTimeout: keys.timerId === parseInt(req.params.id) ? global.timerTimeout : global.timerErrorsTimeout,
+                            timerInterval: keys.timerId === parseInt(req.params.id) ? global.timerInterval : global.timerIErrorsnterval
                         };
 
                         setTimer(paramsTimer);
@@ -50,7 +50,7 @@ module.exports.start = async (req, res) => {
                                 error_status: 1,
                                 error_descr: error
                             },
-                            {where: {id: req.params.id}});
+                            {where: {id: parseInt(req.params.id)}});
                         errorHandler(res, error);
                     })
             });
@@ -63,7 +63,7 @@ module.exports.start = async (req, res) => {
                 error_status: 1,
                 error_descr: error
             },
-            {where: {id: req.params.id}})
+            {where: {id: parseInt(req.params.id)}});
         errorHandler(res, error);
     }
 
@@ -73,10 +73,10 @@ module.exports.stop = async (req, res) => {
     try {
         Settings.update(
             {exec_status: keys.statusStopTimer},
-            {where: {id: req.params.id}})
+            {where: {id: parseInt(req.params.id)}})
             .then(() => {
 
-                if (keys.timerId === req.params.id) {
+                if (keys.timerId === parseInt(req.params.id)) {
                     if (global.timerInterval) {
                         clearInterval(global.timerInterval)
                     } else if (global.timerTimeout) {
@@ -89,7 +89,7 @@ module.exports.stop = async (req, res) => {
                         clearTimeout(global.timerErrorsTimeout)
                     }
                 }
-                Settings.findOne({where: {id: req.params.id}})
+                Settings.findOne({where: {id: parseInt(req.params.id)}})
                     .then(setting => {
                         res.json(setting)
                     })

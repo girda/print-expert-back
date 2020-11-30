@@ -7,7 +7,7 @@ module.exports = (where) => {
     console.log('run connection');
     ConnectionCWW.findAll({where: where}).then(connections => {
         connections.forEach(connection => {
-            const body = JSON.stringify({
+            const data = JSON.stringify({
                 login: connection.login,
                 password: connection.pswd
             });
@@ -33,7 +33,15 @@ module.exports = (where) => {
                     {where: {id: connection.dataValues.id}}
                 );
             };
-            httpRequest(connection.ip, '/printers', createPrinters, updateStatus, 'POST', body)
+            const params = {
+                ip: connection.ip,
+                path: '/printers',
+                method: 'POST',
+                creationMethod: createPrinters,
+                updateStatus: updateStatus,
+                data: data
+            };
+            httpRequest(params)
 
         })
     })
