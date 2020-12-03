@@ -18,6 +18,7 @@ module.exports.get = async (req, res) => {
 };
 module.exports.start = async (req, res) => {
     try {
+        // Перед запуском таймера обновляю статус и время в БД
         await Settings.update(
             {
                 exec_status: keys.statusStartTimer,
@@ -27,12 +28,12 @@ module.exports.start = async (req, res) => {
             },
             {where: {id: parseInt(req.params.id)}})
             .then(() => {
-
+                // собираю параметры для запуска таймера
                 Settings.findOne({where: {id: parseInt(req.params.id)}})
                     .then(setting => {
                         const paramsTimer = {
                             callback: connectionsCWW,
-                            callbackWhere: +keys.timerId === parseInt(req.params.id) ? null : {status: keys.statusConnectionError},
+                            callbackWhere: keys.timerId === parseInt(req.params.id) ? null : {status: keys.statusConnectionError},
                             periodTime: setting.period * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
                             startHour: setting.dataValues.hh,
                             startMinutes: setting.dataValues.mm,

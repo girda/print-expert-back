@@ -1,35 +1,39 @@
 const util = require('../config/keys');
 const http = require('http');
 
-module.exports = (params) => {
+module.exports = (ip, path, callbackSuccess, callbackError, method, body) => {
+
     const options = {
-        host: params.ip,
-        port: 8080,
-        path: params.path,
-        method: params.method ? params.method : 'GET',
+        host: ip,
+        port: '8080',
+        path: path,
+        method: method ? method : 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     };
-    console.log(params.ip);
+
     const callback = (response) => {
-        let printers;
+        let printers = '';
         response.on('data', (chunk) => {
-            printers = chunk;
+            printers += chunk;
         });
         response.on('end', () => {
             printers = JSON.parse(printers);
-            params.creationMethod(printers)
+            console.log(printers)
+            console.log(callbackSuccess)
+            callbackSuccess(printers)
+            console.log('callbackSuccess')
         });
     };
 
     try {
         const req = http.request(options, callback)
             .on("error", (error) => {
-                params.updateStatus(util.statusConnectionError, error.message);
+                callbackError(util.statusConnectionError, error.message)
                 console.log("Error: " + error.message);
             });
-        req.write(params.data);
+        req.write(body);
         req.end();
 
     } catch (error) {

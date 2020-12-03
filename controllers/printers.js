@@ -27,6 +27,7 @@ module.exports.getAll = (req, res) => {
 
 module.exports.create = async (printer, clientId, cwwId) => {
     try {
+        console.log(printer)
         const candidate = await Printer.findOne({where: {c_printer_id: printer.c_printer_id, client_id: clientId}});
 
         if (candidate) {
@@ -36,7 +37,10 @@ module.exports.create = async (printer, clientId, cwwId) => {
             const newPrinter = {
                 c_printer_id: printer.c_printer_id,
                 client_id: clientId,
-                cwwc_id: cwwId
+                cwwc_id: cwwId,
+                ip: printer.ip,
+                model: printer.model,
+                serialnumber: printer.serialNumber
             };
 
             console.log('not candidate');

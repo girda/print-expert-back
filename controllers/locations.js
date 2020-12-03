@@ -5,15 +5,20 @@ const Sequelize = require('sequelize');
 
 module.exports.getAll = async (req, res) => {
     try {
-        const where = JSON.parse(req.params.id);
-        let getLocations;
 
-        if (where.client_id) {
+        const where = JSON.parse(req.params.id);
+
+        let getLocations;
+        console.log(where)
+
+        if (where.distinct) {
+            delete where.distinct;
             getLocations = Location.findAll({
                 attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('name')), 'name']],
                 where
             })
         } else {
+            delete where.distinct;
             getLocations = Location.findAll({where})
         }
         getLocations
@@ -50,10 +55,10 @@ module.exports.create = async (req, res) => {
             .catch(error => {
                 console.log(error)
             })
+
     } catch (error) {
         errorHandler(res, error);
     }
-
 };
 
 module.exports.remove = async (req, res) => {

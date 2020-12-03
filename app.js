@@ -29,21 +29,26 @@ db.sequelize.authenticate()
         Settings.findAll()
             .then(settings => {
                 settings.forEach(setting => {
+                    // Проверяю статус запуска таймера, нужно ли его запустить для опроса данных
+                    // keys.timerId - id основного таймера
+                    // setting.dataValues.exec_status - статус запуска (1 - нужно запускать, 0 - нет)
+                    // global.timerTimeout - присваиваю в эту переменную таймаут (через сколько нужно запустить таймер), это нужно для остановки таймера
                     if (setting.dataValues.id === keys.timerId && setting.dataValues.exec_status && !global.timerTimeout) {
                         const paramsTimer = {
-                            callback: connectionsCWW,
-                            callbackWhere: null,
+                            callback: connectionsCWW, // функция создания параметров для опроса CenterWereWeb
+                            callbackWhere: null, // условие для получения статуса опроса, в данном случае берев все ip адреса
                             periodTime: setting.period * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
                             startHour: setting.dataValues.hh,
                             startMinutes: setting.dataValues.mm,
-                            timerTimeout: global.timerTimeout,
-                            timerInterval: global.timerInterval
+                            timerTimeout: global.timerTimeout, // создаем глобальную переменную, чтоб потом остановить таймер при необходимости
+                            timerInterval: global.timerInterval //global.timerInterval в нем переодичность опросов, нужет для остановки интервала при необходимости
                         };
                         setTimer(paramsTimer);
+                        // keys.timerErrorsId - id таймера который опрашивает неопрошеные CenterWereWeb (с ошибками)
                     } else if (setting.dataValues.id === keys.timerErrorsId && setting.dataValues.exec_status && !global.timerErrorsTimeout) {
                         const paramsTimer = {
                             callback: connectionsCWW,
-                            callbackWhere: {status: keys.statusConnectionError},
+                            callbackWhere: {status: keys.statusConnectionError}, // условие для получения ip адресов с ошибками
                             periodTime: setting.period * 1000 * 60 * 60, // 1000 - мл, 60 - сек, 60 - мин
                             startHour: setting.dataValues.hh,
                             startMinutes: setting.dataValues.mm,

@@ -3,8 +3,9 @@ const errorHandler = require('../util/errorHandler');
 
 module.exports = (req, res) => {
     try {
+
         const clientId = req.body.client;
-        const locationId = req.body.location;
+        const locationId = req.body.location === undefined || req.body.location === '' ? null : req.body.location;
         const departmentId = req.body.department;
         // const printerId = req.body.printer ? req.body.printer.id : req.body.printer;
         const startDate = formatDate(req.body.range.start);
@@ -16,7 +17,7 @@ module.exports = (req, res) => {
         } else {
             query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ", " + locationId + ", " + departmentId + ")"
         }
-        console.log(' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! query')
+        console.log(' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! query');
         console.log(query)
 
         db.sequelize.query(query)
@@ -32,17 +33,17 @@ module.exports = (req, res) => {
                         department: row.Department,
                         model: row.model,
                         serial_number: row.serialnumber,
-                        ip: null,
-                        page_count: row.CountCol,
+                        ip: row.IP,
+                        page_count: row.CountCol + row.CountBk,
                         quantity_black: row.i_QtyBk,
                         quantity_cn: row.i_QtyCn,
                         quantity_mg: row.i_QtyMg,
                         quantity_yl: row.i_QtyYl,
-                        average_coverage_bk: row.AvrCovBK + '%',
-                        average_coverage_cn: row.AvrCovCn + '%',
-                        average_coverage_mg: row.AvrCovMg + '%',
-                        average_coverage_yl: row.AvrCovYl + '%',
-                        average_coverage_all: row.AvrCovTotal + '%',
+                        average_coverage_bk: row.AvrCovBK ?  row.AvrCovBK+ '%' : '-',
+                        average_coverage_cn: row.AvrCovCn ?  row.AvrCovCn+ '%' : '-',
+                        average_coverage_mg: row.AvrCovMg ?  row.AvrCovMg+ '%' : '-',
+                        average_coverage_yl: row.AvrCovYl ?  row.AvrCovYl+ '%' : '-',
+                        average_coverage_all: row.AvrCovTotal ?  row.AvrCovTotal+ '%' : '-',
                         cartridge_resource_bk: row.SdrtBK,
                         cartridge_resource_cn: row.SdrtCn,
                         cartridge_resource_mg: row.SdrtMg,
@@ -50,7 +51,6 @@ module.exports = (req, res) => {
                     })
                 });
                 res.json(tableData);
-
             })
             .error(error => {
                 errorHandler(res, error);

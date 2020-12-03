@@ -48,14 +48,18 @@ module.exports.create = (req, res) => {
                 httpRequest(response.dataValues.ip, '/printers',
                     () => {
                         ConnectionCWW.update({status: util.statusConnectionSuccess}, {where: {id: response.dataValues.id}});
-                        console.log(`connecting ${response.dataValues.ip} successful`)
                     },
                     () => {
                         ConnectionCWW.update(
                             {status: util.statusConnectionError, error: 'Нет подключения к сервису'},
                             {where: {id: response.dataValues.id}}
                         );
-                    }
+                    },
+                    'POST',
+                    JSON.stringify({
+                        login: req.body.login,
+                        password: req.body.password
+                    })
                 );
 
                 res.json({message: `Підключення CWW "${response.dataValues.ip}" успішно створено`})
