@@ -18,12 +18,13 @@ module.exports = (req, res) => {
             query = "CALL `sp_printer_report`('" + startDate + "', '" + endDate + "', " + clientId + ", " + locationId + ", " + departmentId + ")"
         }
         console.log(' !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! query');
-        console.log(query)
+        console.log(query);
 
         db.sequelize.query(query)
             .then(response => {
                 const tableData = [];
                 response.forEach(row => {
+
                     tableData.push({
                         printer_id: row.printer_id,
                         cwwc_id: row.Cwwc_id,
