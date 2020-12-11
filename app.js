@@ -16,6 +16,8 @@ const connectionsRoutes = require('./routes/connections-cww');
 const filtersRoutes = require('./routes/filters');
 const usersRoutes = require('./routes/users');
 const timerRoutes = require('./routes/timer');
+const healsCheckRoutes = require('./routes/heals-check');
+const diagnosticsRoutes = require('./routes/diagnostics');
 
 const connectionsCWW = require('./connectionCWW');
 const setTimer = require('./util/setTimer');
@@ -83,5 +85,7 @@ app.use("/api/connections", connectionsRoutes);
 app.use("/api/filters", filtersRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/timer", timerRoutes);
+app.use("/api/hc", healsCheckRoutes);
+app.use("/api/diagnostics", diagnosticsRoutes);
 
 module.exports = app;
