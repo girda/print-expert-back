@@ -27,12 +27,22 @@ module.exports.getAll = (req, res) => {
 
 module.exports.create = async (printer, clientId, cwwId) => {
     try {
-        console.log(printer)
+        console.log(printer);
         const candidate = await Printer.findOne({where: {c_printer_id: printer.c_printer_id, client_id: clientId}});
 
         if (candidate) {
             console.log(candidate);
-            updatePrinterData(candidate.dataValues.id, printer)
+            if (candidate.ip !== printer.ip) {
+                Printer.update(
+                    {ip: printer.ip},
+                    {where: {id: candidate.dataValues.id}}
+                ).then(res => {
+                    console.log('update IP', res);
+                    updatePrinterData(candidate.dataValues.id, printer);
+                });
+            } else {
+                updatePrinterData(candidate.dataValues.id, printer);
+            }
         } else {
             const newPrinter = {
                 c_printer_id: printer.c_printer_id,
@@ -40,7 +50,11 @@ module.exports.create = async (printer, clientId, cwwId) => {
                 cwwc_id: cwwId,
                 ip: printer.ip,
                 model: printer.model,
-                serialnumber: printer.serialNumber
+                serialnumber: printer.serialNumber,
+                SdrtBK: printer.sdrtBK,
+                SdrtCn: printer.sdrtCn,
+                SdrtMg: printer.sdrtMg,
+                SdrtYl: printer.sdrtYl
             };
 
             console.log('not candidate');
@@ -63,28 +77,40 @@ module.exports.update = (req, res) => {
                     {where: {name: printer.location_name, cwwc_id: printer.cwwc_id}}
                 )
                     .then(location => {
-                        const locationId = location.dataValues.id;
-                        Department.findOne(
-                            {where: {name: printer.department_name, location_id: locationId}}
-                        ).then(department => {
-                            const departmentId = department.dataValues.id;
+                        const newData = {
+                            SdrtBK: printer.cartridge_resource_bk,
+                            SdrtCn: printer.cartridge_resource_cn,
+                            SdrtMg: printer.cartridge_resource_mg,
+                            SdrtYl: printer.cartridge_resource_yl
+                        };
+                        console.log(location);
+                        if (location) {
+                            newData.location_id = location.dataValues.id;
+                            Department.findOne(
+                                {where: {name: printer.department_name, location_id: location.dataValues.id}}
+                            ).then(department => {
+                                if (department) {
+                                    newData.department_id = department.dataValues.id
+                                }
+                                Printer.update(
+                                    newData,
+                                    {where: {id: printer.printer_id}}
+                                );
+                                if (printers.length - 1 === +i) {
+                                    resolve(true)
+                                }
+                            }).catch(error => {
+                                console.log(error)
+                            });
+                        } else {
                             Printer.update(
-                                {
-                                    SdrtBK: printer.cartridge_resource_bk,
-                                    SdrtCn: printer.cartridge_resource_cn,
-                                    SdrtMg: printer.cartridge_resource_mg,
-                                    SdrtYl: printer.cartridge_resource_yl,
-                                    location_id: locationId,
-                                    department_id: departmentId
-                                },
+                                newData,
                                 {where: {id: printer.printer_id}}
                             );
                             if (printers.length - 1 === +i) {
                                 resolve(true)
                             }
-                        }).catch(error => {
-                            console.log(error)
-                        });
+                        }
                     })
                     .catch(error => {
                         console.log(error)
@@ -105,17 +131,22 @@ module.exports.update = (req, res) => {
 };
 
 function updatePrinterData(id, printer) {
+
     const query = "CALL `sp_insert_data`(" + id + ", "
         + printer.countBk + ", "
         + printer.countCol + ","
         + printer.tonBk + ", "
         + printer.tonCn + ", "
         + printer.tonMg + ", "
-        + printer.tonYl + ")";
+        + printer.tonYl +  ", "
+        + "'" + printer.dtlastComm + "'" +")";
     console.log(query);
+
+
     db.sequelize.query(query)
         .then(response => {
             console.log('response sp_insert_data');
+            console.log('SUCCESSES');
             console.log(response)
         })
         .catch(error => {

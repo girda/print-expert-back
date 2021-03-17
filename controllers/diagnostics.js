@@ -16,5 +16,4 @@ module.exports.get = (req, res) => {
     } catch (error) {
         errorHandler(res, error)
     }
-
 };

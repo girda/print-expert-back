@@ -23,6 +23,7 @@ const connectionsCWW = require('./connectionCWW');
 const setTimer = require('./util/setTimer');
 const Settings = require('./models/Settings');
 const keys = require('./config/keys');
+const nodemailer = require('nodemailer');
 
 db.sequelize.authenticate()
     .then(() => {
@@ -87,5 +88,28 @@ app.use("/api/users", usersRoutes);
 app.use("/api/timer", timerRoutes);
 app.use("/api/hc", healsCheckRoutes);
 app.use("/api/diagnostics", diagnosticsRoutes);
+
+// var transporter = nodemailer.createTransport({
+//     service: 'mailgun',
+//     auth: {
+//         user: 'postmaster@mgun.YourDomainName.com',
+//         pass: '**********************************'
+//     }
+// });
+//
+// var mailOptions = {
+//     from: 'noreply@richpost.com',
+//     to: 'andreybutenkoalex@gmail.com',
+//     subject: 'Testmail',
+//     text: 'Hi, mail sent.'
+// };
+//
+// transporter.sendMail(mailOptions, function(error, info){
+//     if (error) {
+//         console.log(error);
+//     } else {
+//         console.log('Email sent: ' + info.response);
+//     }
+// });
 
 module.exports = app;

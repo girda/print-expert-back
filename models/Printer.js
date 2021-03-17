@@ -4,7 +4,7 @@ const db = require("../db");
 module.exports = db.sequelize.define(
     'printers',
     {
-        id: {
+        id:{
             type: Sequelize.INTEGER,
             allowNull: false,
             autoIncrement: true,

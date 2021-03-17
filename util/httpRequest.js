@@ -20,9 +20,9 @@ module.exports = (ip, path, callbackSuccess, callbackError, method, body) => {
         });
         response.on('end', () => {
             printers = JSON.parse(printers);
-            console.log(printers)
-            console.log(callbackSuccess)
-            callbackSuccess(printers)
+            console.log(printers);
+            console.log(callbackSuccess);
+            callbackSuccess(printers);
             console.log('callbackSuccess')
         });
     };
@@ -30,7 +30,7 @@ module.exports = (ip, path, callbackSuccess, callbackError, method, body) => {
     try {
         const req = http.request(options, callback)
             .on("error", (error) => {
-                callbackError(util.statusConnectionError, error.message)
+                callbackError(util.statusConnectionError, error.message);
                 console.log("Error: " + error.message);
             });
         req.write(body);

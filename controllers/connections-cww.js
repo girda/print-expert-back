@@ -1,6 +1,7 @@
 const ConnectionCWW = require('../models/ConnectionCWW');
 const Location = require('../models/Location');
 const Printer = require('../models/Printer');
+const PrinterData = require('../models/PrinterData');
 const errorHandler = require('../util/errorHandler');
 const httpRequest = require('../util/httpRequest');
 const util = require('../config/keys');
@@ -76,18 +77,39 @@ module.exports.remove = async (req, res) => {
 
     try {
         const location = await Location.findOne({where: {cwwc_id: req.params.id}});
-        const printer = await Printer.findOne({where: {cwwc_id: req.params.id}});
+        const printers = await Printer.findAll({where: {cwwc_id: req.params.id}});
+        if (location) {
 
-        if (location || printer) {
             res.json({message: `Поточний об'єкт неможливо видалити, бо на нього посилаються інші об'єкти. Видаліть об'єкти які посилаються на нього та спробуйте ще.`});
         } else {
-            await ConnectionCWW.destroy({where: {id: req.params.id}})
-                .then(deletedRecord => {
-                    res.json({message: `З'єднання IP успішно видалено`});
+            if (printers) {
+                printers.forEach(printer => {
+                    console.log('printer.id');
+                    console.log(printer.id);
+                    PrinterData.destroy({where: {printer_id: printer.id}}).then(() => {
+                        Printer.destroy({where: {id: printer.id}});
+                        Printer.findOne({where: {cwwc_id: req.params.id}}).then(printer => {
+                            if (!printer) {
+                                ConnectionCWW.destroy({where: {id: req.params.id}})
+                                    .then(() => {
+                                        res.json({message: `З'єднання IP успішно видалено`});
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
+                                    })
+                            }
+                        })
+                    })
                 })
-                .catch(error => {
-                    console.log(error)
-                })
+            } else {
+                await ConnectionCWW.destroy({where: {id: req.params.id}})
+                    .then(() => {
+                        res.json({message: `З'єднання IP успішно видалено`});
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
         }
     } catch (error) {
         errorHandler(res, error);
